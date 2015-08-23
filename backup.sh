@@ -29,11 +29,10 @@ fi
 sedvar='s/[\:\|\?\"]//g'
 
 #settings for second part
-dest1="/run/media/elements/org/"
-dest2="/run/media//mybook/org/"
+#set origin
 origin="/data/org/"
-
-dests=( $dest1 $dest2  )
+#set destinations
+dests=( "/mnt/hd1/" "/mnt/hd2/" )
 
 rsync_options="-azts" 
 
