@@ -30,11 +30,11 @@ sedvar='s/[\:\|\?\"]//g'
 
 #settings for second part
 #set origin
-origin="/data/org/"
+origin="/data/org/backup/origin/"
 #set destinations
-dests=( "/mnt/hd1/" "/mnt/hd2/" )
-
-rsync_options="-azts" 
+dests=( "/data/org/backup/testdest1/" "/data/org/backup/testdest2/" "/data/org/backup/testdest3/"  "/data/org/backup/testdest4/" )
+rsync_options="--write-batch=backupscript" 
+rsync_options2="-azs"
 
 echo "Regex used to remove characters before rsync:" $sedvar
 echo "Rsync options:" "$rsync_options"
@@ -147,10 +147,20 @@ then
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 echo "starting rsync"
+
+count=0
 for dest in ${dests[@]}; do 
-  echo "origin:" $origin  
-  echo "dest:" $dest
-	rsync "$rsync_options" "$origin" "$dest"
+  if [[ "$count" -eq 0 ]] 
+  then
+    echo "origin:" $origin  
+    echo "dest:" $dest
+    rsync "$rsync_options" "$rsync_options2" "$origin" "$dest"
+  else
+    echo "origin:" $origin  
+    echo "dest:" $dest
+	  bash backupscript.sh "$dest"
+  fi
+  ((count++))
 done
 IFS=$SAVEIFS
 
