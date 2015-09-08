@@ -63,13 +63,13 @@ for destdir in ${dests[@]}; do
   echo "$count""Destination: $destdir $exists"
   ((count+=1))
 done
-
-read -p "Are you sure you want to continue with this information? " -n 1 -r
-echo    # (optional) move to a new line
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-    exit 1
-fi
+#
+#read -p "Are you sure you want to continue with this information? " -n 1 -r
+#echo    # (optional) move to a new line
+#if [[ ! $REPLY =~ ^[Yy]$ ]]
+#then
+#    exit 1
+#fi
 
 
 
@@ -87,6 +87,9 @@ case "$REPLY" in
 3)  echo "Just rsync"
     rep_chars=false        
     rsync_data=true
+    ;;
+4)  echo "Stop"
+    exit 1
     ;;
 *) echo "Not an option"
    ;;
