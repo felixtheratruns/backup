@@ -73,7 +73,7 @@ done
 
 
 
-read -p "1 does all, 2 just does character remove, 3 just does rsync" -n 1 -r
+read -p "0 Stops 1 does all, 2 just does character remove, 3 just does rsync" -n 1 -r
 echo
 case "$REPLY" in
 1)  echo "Doing all"
@@ -88,7 +88,7 @@ case "$REPLY" in
     rep_chars=false        
     rsync_data=true
     ;;
-4)  echo "Stop"
+0)  echo "Stop"
     exit 1
     ;;
 *) echo "Not an option"
