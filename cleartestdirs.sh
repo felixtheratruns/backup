@@ -2,16 +2,14 @@
 #clears test directories I created
 . vars.sh
 for dest in ${dests[@]}; do
-  find "$dest" -depth -type f -name '*' -exec bash -c '
+  find "$dest" -mindepth 1 -type f -name '*' -exec bash -c '
       for file do
-        rm "$file"
+        rm -v "$file"
       done
   ' bash {} +
-  find "$dest" -depth -type f -name '*' -exec bash -c '
+  find "$dest" -mindepth 1 -type d -name '*' -exec bash -c '
       for dir do
-        rmdir "$dir"
+        rmdir -v "$dir"
       done
   ' bash {} +
 done
-
-
