@@ -24,18 +24,20 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-
-#settings for first part of program
-sedvar='s/[\:\|\?\"]//g'
-
-#settings for second part
-#set origin
-origin="/data/org/backup/origin/"
-#set destinations
-dests=( "/data/org/backup/testdest1/" "/data/org/backup/testdest2/" "/data/org/backup/testdest3/"  "/data/org/backup/testdest4/" )
-rsync_options="--write-batch=backupscript" 
-rsync_options2="-azs"
-
+. vars.sh
+#
+##settings for first part of program
+#sedvar='s/[\:\|\?\"]//g'
+#
+##settings for second part
+##set origin
+#origin="/data/org/backup/origin/"
+##set destinations
+#basedest="/data/org/backup/"
+#dests=( "${basedest}testdest1/" "${basedest}testdest2/" "${basedest}testdest3/"  "${basedest}testdest4/" )
+#rsync_options="--write-batch=backupscript" 
+#rsync_options2="-azs"
+#
 echo "Regex used to remove characters before rsync:" $sedvar
 echo "Rsync options:" "$rsync_options"
 echo ""
