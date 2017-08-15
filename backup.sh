@@ -39,7 +39,7 @@ fi
 #rsync_options2="-azs"
 #
 echo "Regex used to remove characters before rsync:" $sedvar
-echo "Rsync options:" "$rsync_options"
+echo "Rsync options:" "$rsync_opt"
 echo ""
 echo "Rsync folders:"
 count=1
@@ -53,6 +53,9 @@ else
 fi
 
 echo "Origin: " $origin $exists
+
+#write other origins test
+
 
 for destdir in ${dests[@]}; do
   if [ -d "$destdir" ]; then
@@ -100,73 +103,80 @@ esac
 
 if "$rep_chars"
 then
-echo "start replace filenames"
-
-#depth shows subdirectories before their parent and hence prevents 
-#the mv command from moving subdirectories to non-existent directies (ie becasue their parent dir was renamed)
-#basename is needed to prevent cases where a directory is attempted moved because it's parent dir is changed by sed so it thinks the directories are different but it's parent is going to be renamed later 
-#anyway (so directories are actually renamed in order of greadest depth to least depth)
-#but this does not show up in the find commands results so it causes the "mv" command to throw an error
-
-
-find "$origin" -depth -type d -name '*' -exec bash -c '
-    echo -e "doing directories: \n"
-    for dir do
-        bdir=`basename "$dir"`
-        rdir=`echo "$dir" | sed '$sedvar'`        
-        brdir=`basename "$rdir"`
-        if [[ "$bdir" != "$brdir" ]]
-            then
-            echo "mv"
-            echo "1:" "===$dir==="
-            echo "2:" "===$rdir==="
-            mv "$dir" "$rdir"
-            echo "..."
-        fi
-    done
-' bash {} + 
-
-#now do the same for files
-#you might be able to combine the two
-#I just like to split things up
-find "$origin" -type f -name '*' -exec bash -c '
-    echo -e "doing files: $file \n"
-    for file do 
-        rfile=`echo "$file" | sed '$sedvar'`
-        if [[ "$file" != "$rfile" ]]
-            then
-            echo "mv"
-            echo "1:" "===$file==="
-            echo "2:" "===$rfile==="
-            mv "$file" "$rfile"
-            echo "..."
-        fi    
-    done
-' bash {} +
+    echo "start replace filenames"
+    
+    #depth shows subdirectories before their parent and hence prevents 
+    #the mv command from moving subdirectories to non-existent directies (ie becasue their parent dir was renamed)
+    #basename is needed to prevent cases where a directory is attempted moved because it's parent dir is changed by sed so it thinks the directories are different but it's parent is going to be renamed later 
+    #anyway (so directories are actually renamed in order of greadest depth to least depth)
+    #but this does not show up in the find commands results so it causes the "mv" command to throw an error
+    
+    
+    find "$origin" -depth -type d -name '*' -exec bash -c '
+        echo -e "doing directories: \n"
+        for dir do
+            bdir=`basename "$dir"`
+            rdir=`echo "$dir" | sed '$sedvar'`        
+            brdir=`basename "$rdir"`
+            if [[ "$bdir" != "$brdir" ]]
+                then
+                echo "mv"
+                echo "1:" "$dir"
+                echo "2:" "$rdir"
+                mv "$dir" "$rdir"
+                echo "..."
+            fi
+        done
+    ' bash {} + 
+    
+    #now do the same for files
+    #you might be able to combine the two
+    #I just like to split things up
+    find "$origin" -type f -name '*' -exec bash -c '
+        echo -e "doing files: $file \n"
+        for file do 
+            rfile=`echo "$file" | sed '$sedvar'`
+            if [[ "$file" != "$rfile" ]]
+                then
+                echo "mv"
+                echo "1:" "$file"
+                echo "2:" "$rfile"
+                mv "$file" "$rfile"
+                echo "..."
+            fi    
+        done
+    ' bash {} +
 fi
 
 
 if "$rsync_data"
 then
+    echo "starting rsync"
+    count=0
+    SAVEIFS=$IFS
+    IFS=$(echo -en "\n\b")
 
-SAVEIFS=$IFS
-IFS=$(echo -en "\n\b")
-echo "starting rsync"
+    #copy other origins to other_folder
+    echo rsync "$rsync_opt" "$backup_opt" "$origin" "$dest"
+    for other in ${!other_origins[@]}; do
+        echo rsync "$sync_opt" "${other}" "${other_origins[$other]}"
+        rsync "$sync_opt" "${other}" "${other_origins[$other]}"
+    done
 
-count=0
-for dest in ${dests[@]}; do 
-  if [[ "$count" -eq 0 ]] 
-  then
-    echo "origin:" $origin  
-    echo "dest:" $dest
-    rsync "$rsync_options" "$rsync_options2" "$origin" "$dest"
-  else
-    echo "origin:" $origin  
-    echo "dest:" $dest
-	  bash backupscript.sh "$dest"
-  fi
-  ((count++))
-done
-IFS=$SAVEIFS
-
+    for dest in ${dests[@]}; do 
+      if [[ "$count" -eq 0 ]] 
+      then
+        echo "origin:" $origin  
+        echo "dest:" $dest
+        echo rsync "$rsync_opt" "$backup_opt" "$origin" "$dest"
+        rsync "$rsync_opt" "$backup_opt" "$origin" "$dest"
+      else
+        echo "origin:" $origin  
+        echo "dest:" $dest
+    	echo bash backupscript.sh "$dest"
+    	bash backupscript.sh "$dest"
+      fi
+      ((count++))
+    done
+    IFS=$SAVEIFS
 fi
