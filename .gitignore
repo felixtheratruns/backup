@@ -1,2 +1,6 @@
 backupscript
 backupscript.sh
+testdest1/*
+testdest2/*
+testdest3/*
+testdest4/*
