@@ -1,4 +1,11 @@
+
 This bash script backs up folders to multiple directories using rysnc. It also has a menu option that gets rid of characters in paths that cause problems with rsync.
+# Before you start running the main script, do this:
+```
+sudo bash create_and_clear_destination_dirs.sh
+```
+You can run this after you move things to the destinations folders and it will clear them out.
+
 
 # Copying multiple directories
 in vars.sh you will see the default "other\_copying" associative array, this copies 
@@ -29,7 +36,7 @@ declare -A other_copying=( ["/data/backup/backup_src/other_origin/"]="${origin}$
 # Test Mode
 Edit the directories in vars.sh and test with:
 ```
-sudo ./backup.sh
+sudo bash backup.sh
 ```
 This will show you the commands it would run if it were in run mode in addition to various other outputs I think are helpful. Outputs of commands are marked starting with the text "command=" with the actual command in quotations:
 ```
@@ -43,7 +50,7 @@ output="[actual output]"
 # Run Mode
 To put it in run mode, run with:
 ```
-sudo ./backup.sh run
+sudo bash backup.sh run
 ```
 It will show you the commands it is running and the output of those commands similar to test mode.
 
