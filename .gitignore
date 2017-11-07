@@ -1,4 +1,7 @@
 backupscript
 backupscript.sh
-vars.sh
 
+#testdest1/.*
+#testdest2/.*
+#testdest3/.*
+#testdest4/.*
