@@ -155,16 +155,18 @@ echo "starting rsync"
 
 count=0
 for dest in ${dests[@]}; do 
-  if [[ "$count" -eq 0 ]] 
-  then
+#  if [[ "$count" -eq 0 ]] 
+#  then
     echo "origin:" $origin  
     echo "dest:" $dest
-    rsync "$rsync_options" "$rsync_options2" "$origin" "$dest"
-  else
-    echo "origin:" $origin  
-    echo "dest:" $dest
-	  bash backupscript.sh "$dest"
-  fi
+    echo rsync -auv --delete-after "$origin" "$dest"
+    rsync -auv --delete-after "$origin" "$dest"
+#    rsync "$rsync_options" "$rsync_options2" "$origin" "$dest"
+#  else
+#    echo "origin:" $origin  
+#    echo "dest:" $dest
+#	  bash backupscript.sh "$dest"
+#  fi
   ((count++))
 done
 IFS=$SAVEIFS

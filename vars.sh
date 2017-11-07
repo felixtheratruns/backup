@@ -1,14 +1,21 @@
 #!/bin/sh
 #settings for first part of program
-sedvar='s/[\:\|\?\"]//g'
+#old vars with tilder untested
+#sedvar='s/[\:\|\?\"\~]//g'
+#old vars without tilde tested
+#sedvar='s/[\:\|\?\"]//g'
+
+#new vars from porter.sh
+sedvar='s/[^a-zA-Z0-9_:\.\/\-]//g'
 
 #settings for second part
 #set origin
-origin="/data/org/backup/origin/"
+origin="/mnt/hd1/data/"
 #set destinations
-basedest="/data/org/backup/"
-dests=( "${basedest}testdest1/" "${basedest}testdest2/" "${basedest}testdest3/"  "${basedest}testdest4/" )
+basedest="/mnt/hd2"
+dests=( "${basedest}/data" )
+#dests=(  "${basedest}hd2/org/" )
 rsync_options="--write-batch=backupscript" 
-rsync_options2="-azs"
+rsync_options2="-avu --delete"
 
 
