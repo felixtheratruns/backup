@@ -115,6 +115,7 @@ function doesItExist(){
 #    
 #done
 
+#see if other copying exists
 exists=""
 echo "First script will copy:"
 SAVEIFS=$IFS
@@ -129,6 +130,7 @@ do
 done
 IFS=$SAVEIFS
 
+#see if destinations exist
 count=1
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
@@ -263,7 +265,7 @@ then
         IFS=$SAVEIFS
     fi
 
-    if [ "$clean_origin" = true && "$just_characters" = true ]; then
+    if [ "$clean_origin" = true ] && [ "$just_characters" = true ]; then
         echo cleanOrigin "$origin"
         cleanOrigin "$origin"
         is_origin_clean=true
